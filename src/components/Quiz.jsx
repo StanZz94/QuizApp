@@ -1,11 +1,11 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 import QUESTIONS from "../questions.js";
 import quizComplete from "../assets/quiz-complete.png"
 import QuestionTimer from "./QuestionTimer.jsx";
+import Answers from "./Answers.jsx";
 
 export default function Quiz() {
-    const shuffledAnswers = useRef();
     const [answerState, setAnswerState] = useState('');
     const [userAnswers, setUserAnswers] = useState([]);
 
@@ -43,33 +43,17 @@ export default function Quiz() {
         </div>
     }
 
-    if (!shuffledAnswers.current) {
-        shuffledAnswers.current = [...QUESTIONS[activeQuestionIndex].answers];
-        shuffledAnswers.current.sort(() => Math.random() - 0.5);
-    }
-
     return <div id="quiz">
         <div id="question">
             <QuestionTimer key={activeQuestionIndex} timeout={10000} onTimeout={handleSkipAnswer} />
             <h2>{QUESTIONS[activeQuestionIndex].text}</h2>
-            <ul id="answers">
-                {shuffledAnswers.current.map((answer) => {
-                    const isSelected = userAnswers[userAnswers.length - 1] === answer;
-                    let cssClass = "";
-
-                    if (answerState === 'answered' && isSelected) {
-                        cssClass = 'selected'
-                    }
-
-                    if ((answerState === "correct" || answerState === "wrong") && isSelected) {
-                        cssClass = answerState;
-                    }
-
-                    return (<li key={answer} className="answer">
-                        <button className={cssClass} onClick={() => handleSelectAnswer(answer)}>{answer}</button>
-                    </li>)
-                })}
-            </ul>
+            
+            <Answers key={activeQuestionIndex}
+                answers={QUESTIONS[activeQuestionIndex].answers} 
+                selectedAnswer={userAnswers[userAnswers.length - 1]}
+                answerState={answerState}
+                onSelect={handleSelectAnswer}
+            />
         </div>
     </div>
 }
