@@ -16,7 +16,7 @@ export default function Quiz() {
             return [...prevUserAnswer, selectedAnswer];
         });
 
-    },[]);
+    }, []);
 
     const handleSkipAnswer = useCallback(() => handleSelectAnswer(null), [handleSelectAnswer]);
 
